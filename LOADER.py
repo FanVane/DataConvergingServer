@@ -17,7 +17,7 @@ for json_file_name in json_list:
     cursor = conn.cursor()
     with open("./datasets/" + json_file_name, 'r') as f:
         data = json.load(f)
-    table_name = "xxx"
+    table_name = json_file_name.split('.')[0]
     sql = ["drop table if exists " + table_name + "; create table " + table_name + "(AIO real);"]
     for item in data:
         sql.append("insert into " + table_name + " values (" + str(item) + ");")
@@ -26,4 +26,4 @@ for json_file_name in json_list:
     cursor.close()
     conn.close()
     print("stored " + table_name + " into database.")
-print(done)
+print("done")

@@ -1,17 +1,36 @@
+import os
+
 from flask import Flask
 from flask import request
+import os
+
 app = Flask(__name__)
 
 
+def get_file_name():
+    json_list = []
+    for root, dirs, files in os.walk("./datasets", topdown=False):
+        for filename in files:
+            json_list.append(filename)
+    index = 0
+    while True:
+        file_name = "dataset" + str(index) + ".json"
+        if file_name in json_list:
+            index += 1
+            continue
+        return file_name
+
+
+# 将收集到的文件存储到文件夹中
 @app.route('/upload_file_json', methods=['POST'])
 def upload_list():
     assert request.method == 'POST'
-    table_name = request.form["table_name"]
+    file_name = get_file_name()
     data_collected = request.form["data_collected"]
-    print(len(data_collected))
-    with open("datasets/" + table_name + ".json", 'w') as fp:
+    print(str(len(data_collected)) + " elements received")
+    with open("datasets/" + file_name, 'w') as fp:
         fp.write(data_collected)
-    return "successfully stored into server disk with name " + table_name
+    return "successfully stored into server disk with name " + file_name
 
 
 def list2html(res, headline):
